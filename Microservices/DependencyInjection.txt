@@ -1,0 +1,39 @@
+***[appsettings.json -> class]
+var mongoDbSettings = builder.Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();  
+
+
+***[Options pattern]
+builder.Services.Configure<PositonOptions>(builder.Configuration.GetSetion(nameof(PostionOptions)));
+
+MyClass(IOptions<PositionOPtions> options)
+{
+    _options = options.Value;
+}
+
+
+***[Register all subclasses of a certain type]
+busConfigurator.AddConsumers(Assembly.GetEntrylAssembly());
+builder.Services.AddMediatR(typeof(List.ListQueryHandler).Assembly);
+
+
+***[Register a class with parameterized constructor]
+builder.Services.AddSingleton(sp =>
+{
+    var mongoClient = new MongoClient(connectionString);
+    return mongoClient.GetDatabase(serviceName);
+});
+
+builder.services.AddSingleton<IRepository<T>>(sp => 
+{
+    var database = sp.GetService<IMongoDatabase>();
+    return new MongoRepository<T>(database, collectionName);
+})
+
+
+***[Register generic types]
+builder.Services.AddSingleton(typeof(IThing<>), typefo(GenericThing<>));
+
+public interface IThing<T> { ... }
+public class GenericThing<T> : IThing<T> { ... }
+
+
