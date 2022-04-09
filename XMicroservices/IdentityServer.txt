@@ -1,0 +1,30 @@
+***[IdentityServerSettings]
+public class IdentityServerSettings
+{
+    public IReadOnlyCollection<ApiScope> ApiScopes { get; init;}
+    public IReadOnlyCollection<ApiResource> ApiResources { get; init;}
+    public IReadOnlyCollection<Client> Clients { get; init;} 
+    public IReadOnlyCollection<IdentityResource> IdentityResources => 
+        new IdentityResource[]
+        {
+            new IdentityResources.OpenId(),
+            new IdentityResources.Profile(),
+            new IdentityResource("roles", new[]{"role"})
+        };
+}
+
+
+***[Register Service]
+builder.Services.AddIdentityServer(options => {
+        options.Events.RaiseSuccessEvents = true;
+        options.Events.RaiseFailureEvents = true;
+        options.Events.RaiseErrorEvents = true;
+    })
+    .AddAspNetIdentity<ApplicationUser>()
+    .AddInMemoryApiScopes(identityServerSettings.ApiScopes)
+    .AddInMemoryApiResources(identityServerSettings.ApiResources)
+    .AddInMemoryClients(identityServerSettings.Clients)
+    .AddInMemoryIdentityResources(identityServerSettings.IdentityResources)
+    .AddDeveloperSigningCredential();
+
+builder.Services.AddLocalApiAuthentication();

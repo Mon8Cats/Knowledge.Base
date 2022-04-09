@@ -1,0 +1,48 @@
+***[Register MassTransit]
+
+services.AddMassTransit(busConfigurator => 
+{
+    busConfigurator.AddConsumers(Assembly.GetEntryAssembly());
+
+    busConfigurator.UsingRabbitMq((context, configurator) => 
+    {
+        var configuration = context.GetService<IConfiguration>();
+        var serviceSettings = configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
+        var rabbitMQSettings = configuration.GetSection(nameof(RabbitMQSettings)).Get<RabbitMQSettings>();
+        
+        configurator.Host(rabbitMQSettings.Host);
+        configurator.ConfigureEndpoints(context, new KebabCaseEndpointNameFormatter(serviceSettings.ServiceName, false));
+
+        configurator.UseMessageRetry(retryConfigurator => 
+        {
+            retryConfigurator.Interval(3, TimeSpan.FromSeconds(5));
+        });
+    });
+});
+
+services.AddMassTransitHostedService();
+
+
+***[Dependency Injection]
+ public ItemsController(IRepository<Item> itemsRepository, IPublishEndpoint publishEndpoint)
+{
+    _itemsRepository = itemsRepository;
+    _publishEndpoint = publishEndpoint;
+}
+
+
+***[Publish]
+await _publishEndpoint.Publish(new CatalogItemCreated(item.Id, item.Name, item.Description));
+
+
+***[Consumer]
+public class CatalogItemCreatedConsumer : IConsumer<CatalogItemCreated>
+{
+    public async Task Consume(ConsumeContext<CatalogItemCreated> context)
+    {
+        var message = context.Message;
+        ...
+    }
+}
+
+

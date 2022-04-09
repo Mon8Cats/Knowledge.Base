@@ -1,0 +1,27 @@
+[Summary]
+a delegate = a type repreents to methods with a particular parameter list and return type.
+
+
+[Flow]
+define a delegate type 
+define a variable of that type 
+asign a function to the delegate variable 
+call the function via the delegate variable  
+
+[named or Anonymous methods]
+Del d = sc.InstanceMethod();
+d();
+d = SampleClass.StaticMethod();
+d();
+d = name => { ... };
+
+[Func]
+public delegate TResult Func< T, out TResult>(T arg);
+Func<string, string> selector = str => str.ToUpper();
+
+
+public delegate TResult Func<out TResult>();
+
+
+[Action]
+Action<int, int> printNumber = new Action<int, int>(addition);

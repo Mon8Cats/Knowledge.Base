@@ -1,0 +1,39 @@
+[Bad smells in code]
+mysterious names
+duplicated code 
+long function 
+long parameter list
+global data 
+mutable data 
+divergent change 
+shotgut surgery 
+feature envy 
+data chumps
+primitive obsession
+repeated switches 
+loops 
+lazy element 
+speculative generality 
+temporary field 
+message chains 
+middle man 
+insider trading 
+large class 
+alternative classes with different interfaces
+data class
+refused bequest 
+comments 
+
+
+[A Set of Refactorings]
+extract function 
+inline function 
+extract variable 
+inline variable 
+change function declaration 
+encapsulate variable 
+rename variable 
+introduce parameter object 
+combine functions into class 
+combine functions into transform 
+split phase 

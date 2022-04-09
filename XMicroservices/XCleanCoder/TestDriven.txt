@@ -1,0 +1,18 @@
+[TDD laws]
+Write a failing unit test
+Write a minimum code to pass the unit test
+Repeat
+
+[Benefits]
+Certainty
+Defect injection rate
+Courage
+Documentation
+Design
+
+[Test Pyramid]
+Unit tests
+Component tests
+Integration tests
+System tests
+Manual exploratory

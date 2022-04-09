@@ -1,0 +1,7 @@
+***[Configure CORS]
+app.UseCors(corsBuilder => 
+{
+    corsBuilder.WithOrigins(builder.Configuration[AllowedOriginSetting])
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+});

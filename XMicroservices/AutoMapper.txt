@@ -1,0 +1,28 @@
+[Summary]
+Install Packages -> Register Service -> Define Maps -> Inject Service -> Use Service
+
+
+[Packages]
+AutomMapper.Extensions.Micorsoft.DependencyInjection
+
+
+[Profile]
+public UserProfile()
+{
+    CreateMap<User, UserViewModel>(); # same properties names
+
+    CreateMap<User, UserViewModel>()
+        .ForMember(
+            dest => dest.FName,
+            opt => opt.MapFrom(src => src.FirstName))
+        .ForMember(
+            dest => des.LName,
+            opt => opt.MapFrm(src => src.LastName))
+        .ReverseMap();
+}
+
+[Register Service]
+//Assembly Scanning
+//var config = new MapperConfiguration(cfg => {cfg.AddMaps(myAssembly); });
+services.AddAutoMapper(Assembly.GetExecutingAssembl()); // all profiles in Startup.ConfigureService
+//services.AddAutoMapper(Assembly.GetAssembly(typeof(MyApp.SomeClass)));

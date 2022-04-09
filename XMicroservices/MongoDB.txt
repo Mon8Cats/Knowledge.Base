@@ -1,0 +1,70 @@
+***[Entity]
+public interface IEntity
+{
+    Guid Id { get; set; }
+}
+
+***[Repository]
+public interface IRepository<T>  where T : IEntity
+{
+    Task CreateAsync(T entity);
+    Task DeleteAsync(Guid id);
+    Task UpdateAsync(T entity);
+
+    Task<IReadOnlyCollection<T>> GetAllAsync();
+    Task<IReadOnlyCollection<T>> GetAllAsync(Expression<Func<T, bool>> filter);
+
+    Task<T> GetAsync(Guid id);
+    Task<T> GetAsync(Expression<Func<T, bool>>) filter);
+}
+
+public class MongoRepository<T> : IRepository<T> where T : IEntity
+{
+    public MongoRepository(IMongoDatabase database, string collectionName)
+    {
+        _dbCollection = database.GetCollection<T>(collectionName);
+    }
+
+    private readonly IMongoCollection<T> _dbCollection;
+    private readonly FilterDefinitionBuilder<T> _filterBuilder = Builder<T>.Builder;
+
+
+    // CRUD operation
+    var filter = _filterBuilder.Eq(entity => entity.Id, id);
+    _dbCollection.Find(filter).FirstOrDefaultAsync();
+
+    _dbCollection.Find(_filterBuilder.Empty).ToListAsync();
+    _dbCollection.Find(filter).ToListAsync();
+
+    _dbCollection.InsertOneAsync(entity);
+
+    _dbCollection.ReplaceOneAsync(filter, entity);
+
+    _dbCollection.DeleterOneAsync(filter);
+}
+
+
+***[Servcie Registeration]
+BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String)); 
+BsonSerializer.RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String)); 
+
+services.AddSingleton(serviceProvider => 
+{
+    ...
+    var mongoClient = new MongoClient(mongoDbSettigns.ConnectionString);
+    return mongoClient.GetDatabase(serviceSettings.ServiceName);
+
+});
+
+services.AddSingleton<IRepository<T>>(serviceProvider => {
+    var database = serviceProvider.GetService<IMongoDatabase>();
+    return new MongoRepository<T>(database, collectionName);
+});
+
+
+***[Inject Dependencies]
+public ItemsController(IRepository<Item> itemsRepository, IPublishEndpoint publishEndpoint)
+{
+    _itemsRepository = itemsRepository;
+    _publishEndpoint = publishEndpoint;
+}

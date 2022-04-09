@@ -1,0 +1,47 @@
+[Summary]
+Install Packages -> Create Service -> Register Service -> Inject Service -> Use Service
+
+[Register Service]
+services.AddMassTransit(busConfig => 
+{
+    busConfig.UseRabbitMq((ctx, cfg) => 
+    {
+        cfg.Host(rabbitmq_url);
+    });
+});
+services.AddMassTransitHostedService();
+
+
+[Inject Service]
+IPublishEndPoint, 
+IMapper
+
+[Publish]
+var eventMessage = _mapper.Map<BasketCheckoutEvent>(basketCheckout);
+
+
+[Send]
+ConsumeContext
+ISendEndpointProvider
+IBus
+IConsumer<SubmitOrder>
+
+var endpoint = await sendEndpointProvider.GetSendEndpoint(serviceAddress);
+await endpoint.Send(new SubmitOrder { ... });
+await context.Send(new SubmitOrder { ... });
+
+
+[Publish]
+ConsumeContext
+IPublishEndPoint 
+IBus 
+
+await publishEndpint.Publish<OrderSubmitted>( new OrderSubmitted { ... });
+
+SubmitOrderConsumer : IConsume<SubmitOrder>
+SumitOrderConsumer(IOrderSubmitter submitter) { ... }
+Task Consume(IConsumeContext<SubmitOrder> context)
+{
+    await _orderSubmitter,Process(context.Message);
+    await context.Publish<Order
+}

@@ -1,0 +1,46 @@
+***[User, Role]
+
+[CollectionName("Users")]
+public class ApplicationUser : MongoIdentityUser<Guid> { ... }
+
+[CollectionName("Roles")]
+public class ApplicationRole : MongoIdentityRole<Guid> { ... }
+
+
+***[Register]
+builder.Services.Configure<IdentitySettings>(builder.Configuration.GetSection(nameof(IdentitySettings)))
+    .AddDefaultIdentity<ApplicationUser>()
+    .AddRoles<ApplicationRole>()
+    .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>
+    (
+        mongoDbSettings.ConnectionString,
+        serviceSettings.ServiceName
+    );
+
+***[Seeting Data using HostedService]
+public class IdentitySeedHostedService : IHostedService
+{
+    public IdentitySeedHostedService(IServiceScopeFactory serviceScopeFactory, IOptions<IdentitySettings> identityOptions)
+    {
+        _serviceScopeFactory = serviceScopeFactory;
+        settings = identityOptions.Value;
+        
+    }
+
+    public async Task StartAsync(CancellationToken cancellationToken)
+    {
+        using var scope = _serviceScopeFactory.CreateAsyncScope();
+        
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+        // create user and roles using userManager and roleManager
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+
+}
+
+***[Register HostedService]
+builder.Services.AddHostedService<IdentitySeedHostedService>();
+

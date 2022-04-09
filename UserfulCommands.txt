@@ -1,0 +1,76 @@
+***[NET CLI]
+dotnet new list
+dotnet new webapi -n Play.Catalog.Service --no-https
+dotnet new webapi -o Play.Catalog.Service 
+dotnet new classlib -n Play.Common
+dotnet new grpc -n Discount.grpc 
+
+dotnet new sln -n MySolution
+// in a solution
+dotnet sln list 
+dotnet sln add ./Services/Ordering/Ordering.API/
+// in a project
+dotnet add reference ../Project1.API/Project1.API.csproj
+
+
+dotnet restore/build/run 
+dotnet dev-certs https --trust
+
+dotnet pack -p:PackageVersion=1.0.1 -o ~/packages/
+dotnet nuget list source
+dotnet nuget remove source PlayGround
+dotnet nuget add source ~/packages -n PlayGround
+
+
+dotnet ef --version
+dotnet ef migrate add InitialCreate
+dotnet ef database update
+
+
+***[VS Code Commands]
+code .
+code . -r 
+shift + cmd + p  
+shift + cmd + f  
+f5 : debugging  
+ctl + . or ctl + j : toggle terminal  
+cmd + b : toggle side bar  
+settings/files : exclude: **/bin, **/obj
+
+
+***[Mac Commands]
+cmd + space : open serachlight
+cmd + tab : shuffle open apps 
+
+lsof -i:5001 -> find running process ID using 5001 port
+kill -9 <pid>
+
+cd ~
+cd /
+ls -al 
+ls -a 
+rm -rf <a_foldr>
+
+.bash_profile, .bashrc, .profile, 
+
+***[vi commands]
+i : input mode 
+exc : command mode 
+:q : quit
+:wq : write(saving) and quit 
+:q! : quit without saving 
+
+***[Docker]
+docker ps 
+docker ps -a 
+docker network/volume/image/container ls 
+docker stop/rm <container>
+docker rmi <image>
+docker rm $(docker ps -a -f status=exited -q)  # -q -> id only 
+docker image/system/volume/network prune
+
+
+
+***[docker-compose]
+docker-compose -f docker-compose.yml up --build -d  # rebuild, detached 
+docker-compose up . -d 
